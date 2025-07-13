@@ -2,7 +2,8 @@
 ### Allows you to enable specific URLs to open in glance without using the key modifiers 
 I left `*.reddit.com/r/*/comments/*` as a default rule because thats the whole reason this extension exists
 
-<img width="309" height="307" alt="image" src="https://github.com/user-attachments/assets/9b9992cc-ce24-4254-9d38-2a025c151a19" />
-<img width="309" height="307" alt="image" src="https://github.com/user-attachments/assets/44e6da51-a149-4c83-a279-b3ad52fb5e9d" />
+<img width="313" height="307" alt="image" src="https://github.com/user-attachments/assets/a16b32be-a9bc-4544-b4c8-fcd95f841fe5" />
+<img width="313" height="307" alt="image" src="https://github.com/user-attachments/assets/c91ee90d-9751-4a64-8d25-58d39ed7117f" />
 
-![gif](https://github.com/user-attachments/assets/64c89257-f6fa-45c8-ba53-e62ee6217bf9)
+![gif](https://github.com/user-attachments/assets/be1fa104-8e4d-4ba9-a711-e0e7df8e60ae)
+
