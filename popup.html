@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Extended Glance</title>
+  <style>
+    :root {
+      --bg-color: #F2F0E2;
+      --text-color: #1F1F1F;
+      --header-text-color: #1F1F1F;
+      --card-bg: #E6E4D6;
+      --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+      --card-hover-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+      --card-focus-shadow: 0 0 0 3px rgba(247, 111, 83, 0.2);
+      --placeholder-color: #86868b;
+      --toggle-bg-inactive: #E6E4D6;
+      --toggle-bg-active: #F76F53;
+      --toggle-knob-bg: var(--bg-color);
+      --scrollbar-thumb: #D1D1D6;
+      --scrollbar-thumb-hover: #A1A1AA;
+      --arrow-color: #6b7280;
+      --segment-bg: #E6E4D6;
+      --segment-active-bg: var(--toggle-bg-active);
+      --segment-text: var(--text-color);
+      --segment-active-text: #FFFFFF;
+      --segment-hover-bg: rgba(0, 0, 0, 0.03);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #1F1F1F;
+        --text-color: #D2CFC0;
+        --header-text-color: #D2CFC0;
+        --card-bg: #2A2A2A;
+        --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        --card-hover-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --card-focus-shadow: 0 0 0 3px rgba(247, 111, 83, 0.3);
+        --placeholder-color: #8e8e93;
+        --toggle-bg-inactive: #2A2A2A;
+        --toggle-bg-active: #F76F53;
+        --toggle-knob-bg: var(--text-color);
+        --scrollbar-thumb: #48484a;
+        --scrollbar-thumb-hover: #636366;
+        --arrow-color: #8e8e93;
+        --segment-bg: rgba(255, 255, 255, 0.05);
+        --segment-active-bg: var(--toggle-bg-active);
+        --segment-text: var(--text-color);
+        --segment-active-text:#fffceb;
+        --segment-hover-bg: rgba(255, 255, 255, 0.05);
+      }
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      box-shadow: none !important;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      width: 320px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.5;
+      overflow: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .container {
+      padding: 20px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--header-text-color);
+      margin-bottom: 4px;
+    }
+    .section {
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeInUp 0.6s ease-out forwards;
+    }
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.2s; }
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--header-text-color);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .input-group {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s ease, background 0.3s ease;
+    }
+    .input-group.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .input-group.saving {
+      animation: savePulse 0.3s ease-out;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: none;
+      outline: none;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+      font-size: 13px;
+      line-height: 1.4;
+      resize: vertical;
+      background: transparent;
+      color: var(--text-color);
+    }
+    textarea::placeholder {
+      color: var(--placeholder-color);
+    }
+    .segmented-control {
+      display: flex;
+      background: var(--segment-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 4px;
+      margin-top: 16px;
+      justify-content: center;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+    .segmented-control:focus-within {
+      outline: none;
+    }
+    .segment-button {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      background: transparent;
+      color: var(--segment-text);
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+      white-space: nowrap;
+      text-align: center;
+      outline: none;
+    }
+    .segment-button:focus {
+      outline: none;
+    }
+    .segment-button.active {
+      background: var(--segment-active-bg);
+      color: var(--segment-active-text);
+    }
+    .segment-button:hover:not(.active) {
+      background: var(--segment-hover-bg);
+      transform: translateY(-1px);
+    }
+    .segment-button.active:hover {
+      transform: scale(0.98);
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes savePulse {
+      0% {
+        box-shadow: var(--card-shadow);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 20px var(--card-focus-shadow);
+        transform: scale(1.02);
+      }
+      100% {
+        box-shadow: var(--card-shadow);
+        transform: scale(1);
+      }
+    }
+    .container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .container::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 2px;
+    }
+    .container::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .title-section {
+      flex: 1;
+      text-align: left;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: var(--toggle-bg-inactive);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .toggle-switch.active {
+      background: var(--toggle-bg-active);
+    }
+    .toggle-switch::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: var(--toggle-knob-bg);
+      border-radius: 50%;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    .toggle-switch.active::before {
+      transform: translateX(20px);
+    }
+    .toggle-switch:hover {
+      transform: scale(1.05);
+    }
+    button:focus, button:focus-visible, button:focus-within,
+    input:focus, input:focus-visible, input:focus-within,
+    textarea:focus, textarea:focus-visible, textarea:focus-within,
+    select:focus, select:focus-visible, select:focus-within {
+      outline: none !important;
+    }
+    *:focus, *:focus-visible, *:focus-within {
+      outline: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-content">
+        <div class="title-section">
+          <h1>Extended Glance</h1>
+        </div>
+        <div class="toggle-switch" id="enableToggle"></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="segmented-control" id="modifierSegmentedControl">
+        <button class="segment-button" data-modifier="altKey">⌥</button>
+        <button class="segment-button" data-modifier="ctrlKey">⌃</button>
+        <button class="segment-button" data-modifier="shiftKey">⇧</button>
+        <button class="segment-button" data-modifier="metaKey">⌘</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">
+        URL Patterns
+      </div>
+      <div class="input-group" id="whitelistGroup">
+        <textarea
+          id="whitelistArea"
+          placeholder="github.com/*/*/issues/*&#10;github.com/*/*/pull/*&#10;*.reddit.com/r/*/comments/*"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
